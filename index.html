@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="tr">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agrolink - Bakım Modu</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+    }
+
+    html {
+      height: 100%;
+      width: 100%;
+    }
+
+    .main-wrapper {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .background-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.05;
+      z-index: 1;
+    }
+
+    .content-container {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 40px;
+      max-width: 600px;
+    }
+
+    .logo-title {
+      font-size: 72px;
+      font-weight: 800;
+      margin: 0 0 40px 0;
+      letter-spacing: -2px;
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .maintenance-message {
+      font-size: 24px;
+      margin: 0;
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    .dots-container {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    .dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .icon-container {
+      margin-top: 60px;
+      animation: fadeIn 1s ease-out 0.6s both;
+    }
+
+    .maintenance-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .time-estimate {
+      margin-top: 30px;
+      padding: 16px 32px;
+      border-radius: 12px;
+      display: inline-block;
+      animation: fadeIn 1s ease-out 0.9s both;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .info-button {
+      margin-top: 30px;
+      padding: 14px 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: fadeIn 1s ease-out 1.2s both;
+      font-family: inherit;
+    }
+
+    .info-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(5, 150, 105, 0.3);
+    }
+
+    .info-button:active {
+      transform: translateY(0);
+    }
+
+    .info-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .info-panel.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .info-content {
+      max-width: 500px;
+      padding: 40px;
+      border-radius: 16px;
+      text-align: left;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    .info-panel.active .info-content {
+      transform: scale(1);
+    }
+
+    .info-content h3 {
+      margin: 0 0 20px 0;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .info-content p {
+      margin: 0 0 30px 0;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .close-button {
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .close-button:hover {
+      transform: translateY(-1px);
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.5);
+        opacity: 0.5;
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .logo-title {
+        font-size: 48px;
+      }
+      
+      .maintenance-message {
+        font-size: 18px;
+      }
+      
+      .content-container {
+        padding: 20px;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="main-wrapper">
+   <svg class="background-pattern" xmlns="http://www.w3.org/2000/svg"><pattern id="grid" width="40" height="40" patternunits="userSpaceOnUse">
+     <circle cx="20" cy="20" r="1" fill="#059669" />
+    </pattern> <rect width="100%" height="100%" fill="url(#grid)" />
+   </svg>
+   <div class="content-container">
+    <h1 class="logo-title" id="siteTitle">Agrolink</h1>
+    <p class="maintenance-message" id="maintenanceMessage"><span id="messageText">Bakım aşamasında, lütfen bekleyiniz</span></p>
+    <div class="time-estimate" id="timeEstimate"><span id="estimateText">Tahmini Süre: 10-15 dakika</span>
+    </div><button class="info-button" id="infoButton">Daha Fazla Bilgi Al</button>
+    <div class="dots-container" style="margin-top: 20px; justify-content: center;"><span class="dot" id="dot1"></span> <span class="dot" id="dot2"></span> <span class="dot" id="dot3"></span>
+    </div>
+    <div class="info-panel" id="infoPanel">
+     <div class="info-content">
+      <h3 id="infoPanelTitle">Bakım Sebebi</h3>
+      <p id="infoPanelText">Sistemimizi sizin için daha iyi hale getirmek amacıyla gerekli güncellemeleri yapıyoruz. Sunucu altyapımız iyileştiriliyor ve yeni özellikler ekleniyor. Anlayışınız için teşekkür ederiz.</p><button class="close-button" id="closeButton">Kapat</button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      background_color: '#f0fdf4',
+      primary_color: '#059669',
+      secondary_color: '#10b981',
+      text_color: '#1f2937',
+      dot_color: '#059669',
+      button_color: '#059669',
+      button_text_color: '#ffffff',
+      info_bg_color: '#ffffff',
+      info_text_color: '#1f2937',
+      estimate_bg_color: '#d1fae5',
+      estimate_text_color: '#065f46',
+      font_family: 'Inter',
+      font_size: 16,
+      site_title: 'Agrolink',
+      maintenance_message: 'Bakım aşamasında, lütfen bekleyiniz',
+      time_estimate: 'Tahmini Süre: 10-15 dakika',
+      info_title: 'Bakım Sebebi',
+      info_text: 'Sistemimizi sizin için daha iyi hale getirmek amacıyla gerekli güncellemeleri yapıyoruz. Sunucu altyapımız iyileştiriliyor ve yeni özellikler ekleniyor. Anlayışınız için teşekkür ederiz.',
+      button_text: 'Daha Fazla Bilgi Al',
+      close_button_text: 'Kapat'
+    };
+
+    async function onConfigChange(config) {
+      const backgroundColor = config.background_color || defaultConfig.background_color;
+      const primaryColor = config.primary_color || defaultConfig.primary_color;
+      const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const dotColor = config.dot_color || defaultConfig.dot_color;
+      const buttonColor = config.button_color || defaultConfig.button_color;
+      const buttonTextColor = config.button_text_color || defaultConfig.button_text_color;
+      const infoBgColor = config.info_bg_color || defaultConfig.info_bg_color;
+      const infoTextColor = config.info_text_color || defaultConfig.info_text_color;
+      const estimateBgColor = config.estimate_bg_color || defaultConfig.estimate_bg_color;
+      const estimateTextColor = config.estimate_text_color || defaultConfig.estimate_text_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      const siteTitle = config.site_title || defaultConfig.site_title;
+      const maintenanceMessage = config.maintenance_message || defaultConfig.maintenance_message;
+      const timeEstimate = config.time_estimate || defaultConfig.time_estimate;
+      const infoTitle = config.info_title || defaultConfig.info_title;
+      const infoText = config.info_text || defaultConfig.info_text;
+      const buttonText = config.button_text || defaultConfig.button_text;
+      const closeButtonText = config.close_button_text || defaultConfig.close_button_text;
+
+      document.body.style.backgroundColor = backgroundColor;
+      
+      const titleElement = document.getElementById('siteTitle');
+      titleElement.textContent = siteTitle;
+      titleElement.style.fontFamily = `${fontFamily}, 'Segoe UI', system-ui, -apple-system, sans-serif`;
+      titleElement.style.fontSize = `${fontSize * 4.5}px`;
+      titleElement.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      titleElement.style.webkitBackgroundClip = 'text';
+      titleElement.style.backgroundClip = 'text';
+      
+      const messageElement = document.getElementById('messageText');
+      messageElement.textContent = maintenanceMessage;
+      messageElement.style.fontFamily = `${fontFamily}, 'Segoe UI', system-ui, -apple-system, sans-serif`;
+      messageElement.style.fontSize = `${fontSize * 1.5}px`;
+      messageElement.style.color = textColor;
+      
+      const dots = [
+        document.getElementById('dot1'),
+        document.getElementById('dot2'),
+        document.getElementById('dot3')
+      ];
+      
+      dots.forEach(dot => {
+        dot.style.backgroundColor = dotColor;
+      });
+      
+      const iconPaths = [
+        document.getElementById('iconPath'),
+        document.getElementById('iconPath2'),
+        document.getElementById('iconPath3')
+      ];
+      
+      iconPaths.forEach(path => {
+        path.setAttribute('stroke', primaryColor);
+      });
+
+      const estimateElement = document.getElementById('estimateText');
+      estimateElement.textContent = timeEstimate;
+      estimateElement.parentElement.style.backgroundColor = estimateBgColor;
+      estimateElement.parentElement.style.color = estimateTextColor;
+      estimateElement.parentElement.style.fontFamily = `${fontFamily}, 'Segoe UI', system-ui, -apple-system, sans-serif`;
+      estimateElement.parentElement.style.fontSize = `${fontSize * 1.125}px`;
+
+      const infoButton = document.getElementById('infoButton');
+      infoButton.textContent = buttonText;
+      infoButton.style.backgroundColor = buttonColor;
+      infoButton.style.color = buttonTextColor;
+      infoButton.style.fontFamily = `${fontFamily}, 'Segoe UI', system-ui, -apple-system, sans-serif`;
+      infoButton.style.fontSize = `${fontSize}px`;
+
+      const infoPanelTitle = document.getElementById('infoPanelTitle');
+      infoPanelTitle.textContent = infoTitle;
+      infoPanelTitle.style.fontFamily = `${fontFamily}, 'Segoe UI', system-ui, -apple-system, sans-serif`;
+      infoPanelTitle.style.fontSize = `${fontSize * 1.75}px`;
+      infoPanelTitle.style.color = infoTextColor;
+
+      const infoPanelText = document.getElementById('infoPanelText');
+      infoPanelText.textContent = infoText;
+      infoPanelText.style.fontFamily = `${fontFamily}, 'Segoe UI', system-ui, -apple-system, sans-serif`;
+      infoPanelText.style.fontSize = `${fontSize}px`;
+      infoPanelText.style.color = infoTextColor;
+
+      const infoContent = document.querySelector('.info-content');
+      infoContent.style.backgroundColor = infoBgColor;
+
+      const closeButton = document.getElementById('closeButton');
+      closeButton.textContent = closeButtonText;
+      closeButton.style.backgroundColor = buttonColor;
+      closeButton.style.color = buttonTextColor;
+      closeButton.style.fontFamily = `${fontFamily}, 'Segoe UI', system-ui, -apple-system, sans-serif`;
+      closeButton.style.fontSize = `${fontSize * 0.9375}px`;
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              config.background_color = value;
+              window.elementSdk.setConfig({ background_color: value });
+            }
+          },
+          {
+            get: () => config.estimate_bg_color || defaultConfig.estimate_bg_color,
+            set: (value) => {
+              config.estimate_bg_color = value;
+              window.elementSdk.setConfig({ estimate_bg_color: value });
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              config.text_color = value;
+              window.elementSdk.setConfig({ text_color: value });
+            }
+          },
+          {
+            get: () => config.button_color || defaultConfig.button_color,
+            set: (value) => {
+              config.button_color = value;
+              window.elementSdk.setConfig({ button_color: value });
+            }
+          },
+          {
+            get: () => config.button_text_color || defaultConfig.button_text_color,
+            set: (value) => {
+              config.button_text_color = value;
+              window.elementSdk.setConfig({ button_text_color: value });
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            config.font_family = value;
+            window.elementSdk.setConfig({ font_family: value });
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            config.font_size = value;
+            window.elementSdk.setConfig({ font_size: value });
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ['site_title', config.site_title || defaultConfig.site_title],
+        ['maintenance_message', config.maintenance_message || defaultConfig.maintenance_message],
+        ['time_estimate', config.time_estimate || defaultConfig.time_estimate],
+        ['button_text', config.button_text || defaultConfig.button_text],
+        ['info_title', config.info_title || defaultConfig.info_title],
+        ['info_text', config.info_text || defaultConfig.info_text],
+        ['close_button_text', config.close_button_text || defaultConfig.close_button_text]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    // Info panel functionality
+    const infoButton = document.getElementById('infoButton');
+    const infoPanel = document.getElementById('infoPanel');
+    const closeButton = document.getElementById('closeButton');
+
+    infoButton.addEventListener('click', () => {
+      infoPanel.classList.add('active');
+    });
+
+    closeButton.addEventListener('click', () => {
+      infoPanel.classList.remove('active');
+    });
+
+    infoPanel.addEventListener('click', (e) => {
+      if (e.target === infoPanel) {
+        infoPanel.classList.remove('active');
+      }
+    });
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a43689b30de3d66',t:'MTc2NDA5NzQzMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
